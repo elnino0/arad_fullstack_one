@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "permissions":["admin"]
+    },
+    {
+        "id": 2,
+        "permissions":["View Subscriptions","Create Subscriptions","Delete Subscriptions","View Movies","Create Movies","Delete Movies"]
+
+    },
+    {
+        "id": 3,
+        "permissions":["View Movies","Create Movies","Delete Movies"]
+ 
+    },
+    {
+        "id": 4,
+        "permissions":["View Subscriptions","Create Subscriptions","Delete Subscriptions"]
+
+    },
+    {
+        "id": 5,
+        "permissions":["View Subscriptions","Delete Subscriptions","View Movies","Create Movies","Delete Movies"]
+
+    }]
+
