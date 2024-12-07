@@ -1,12 +1,9 @@
 const express = require('express');
 require("./modules/mongodbConnector")
 const app = express();
-const bodyParser = require('body-parser');
 const databaseClass = require("./modules/mongodbConnector");
 const insertUsers = require('./insertUsers');
 const { protect } = require('./middleware/authMiddleware');
-const { checkPermission } = require('./middleware/rbacMiddleware');
-const insertPermissions = require('./insertPermissions');
 const insertMovies = require('./insertMovies');
 const movieRouter = require("./routes/moviesRoutes")
 const subsRouter = require("./routes/subRoutes")
@@ -41,7 +38,6 @@ const authRputer = require("./routes/authRoutes")
 const onConnection =() =>{
     console.log("database connected")
     insertMovies()
-    insertPermissions()
     insertUsers()
 }
 

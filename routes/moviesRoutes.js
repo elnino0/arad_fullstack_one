@@ -1,8 +1,10 @@
 const express = require('express');
-const moviesModel = require("../models/movies")
+const moviesModel = require("../models/movies");
+const authorize = require('../middleware/rbacMiddleware');
+const UserRole = require('../enums/roles');
 const router = express.Router()
 
-router.post('/movies',  (req, res) => {
+router.post('/movies', authorize(UserRole.admin, UserRole.CreateMovies) ,(req, res) => {
         const data = new moviesModel({
             ...req.body
     })
@@ -17,7 +19,7 @@ router.post('/movies',  (req, res) => {
 
 });
 
-router.get('/movies', async (req, res) => {
+router.get('/movies', authorize(UserRole.admin, UserRole.ViewMovies) ,async (req, res) => {
         try{
         const data = await moviesModel.find();
         res.json(data)
@@ -27,7 +29,7 @@ router.get('/movies', async (req, res) => {
     }
 });
 
-router.get('/movies/:id', async (req, res) => {
+router.get('/movies/:id', authorize(UserRole.admin, UserRole.ViewMovies) ,async (req, res) => {
     try{
         const data = await moviesModel.findById(req.params.id);
         res.json(data)
@@ -37,7 +39,7 @@ router.get('/movies/:id', async (req, res) => {
     }
 })
 
-router.delete('/movies/:id', async (req, res) => {
+router.delete('/movies/:id', authorize(UserRole.admin, UserRole.DeleteMovies) ,async (req, res) => {
         try {
         const id = req.params.id;
         const data = await moviesModel.findByIdAndDelete(id)
@@ -48,7 +50,7 @@ router.delete('/movies/:id', async (req, res) => {
     }
 });
 
-router.patch('/movies/:id', async (req, res) => {
+router.patch('/movies/:id', authorize(UserRole.admin, UserRole.CreateMovies) ,async (req, res) => {
     try {
         const id = req.params.id;
         const updatedData = req.body;

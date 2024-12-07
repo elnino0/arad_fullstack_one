@@ -4,6 +4,7 @@ const User = require('../models/safeuser');
 const Role = require('../modules/role');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
+const { is } = require('express/lib/request');
 
 
 // Register a new user with a role
@@ -56,10 +57,11 @@ exports.registerUser = (req, res) => {
 
      if (user && (await user.matchPassword(password))) {
        res.json({
-         _id: user._id,
+         _id: user.id,
          username: user.username,
          email: user.email,
          token: generateToken(user._id),
+         isAdmin: user.roles.includes(Role.Admin),
        });
      } else {
        res.status(401).json({ message: 'Invalid email or password' });

@@ -1,8 +1,10 @@
 const express = require('express');
-const subsModel = require("../models/subscriptions")
+const subsModel = require("../models/subscriptions");
+const authorize = require('../middleware/rbacMiddleware');
+const UserRole = require('../enums/roles');
 const router = express.Router()
 
-router.post('/subs', async (req, res) => {
+router.post('/subs', authorize(UserRole.admin, UserRole.CreateSubscriptions),async (req, res) => {
     try {
       const { userid, movieName } = req.body;
       if (!userid || !movieName) {
@@ -17,7 +19,7 @@ router.post('/subs', async (req, res) => {
     }
   });
 
-    router.get('/subs', async (req, res) => {
+    router.get('/subs', authorize(UserRole.admin, UserRole.ViewSubscriptions),async (req, res) => {
         try{
         const data = await subsModel.find().exec();
         res.json(data)
@@ -27,7 +29,7 @@ router.post('/subs', async (req, res) => {
     }
 });
 
-router.get('/subs/:id', async (req, res) => {
+router.get('/subs/:id',authorize(UserRole.admin, UserRole.ViewSubscriptions) ,async (req, res) => {
 try{
     const data = await subsModel.findById(req.params.id);
     res.json(data)
@@ -37,7 +39,7 @@ catch(error){
 }
 })
 
-router.delete('/subs/:id', async (req, res) => {
+router.delete('/subs/:id',authorize(UserRole.admin, UserRole.DeleteSubscriptions) ,async (req, res) => {
     try {
     const id = req.params.id;
     const data = await subsModel.findByIdAndDelete(id)
@@ -55,7 +57,7 @@ catch (error) {
 }
 });
 
-router.patch('/subs/:id', async (req, res) => {
+router.patch('/subs/:id',authorize(UserRole.admin, UserRole.CreateSubscriptions) ,async (req, res) => {
 try {
     const id = req.params.id;
     const updatedData = req.body;

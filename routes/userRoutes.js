@@ -1,8 +1,10 @@
 const express = require('express');
-const safeuserModel = require("../models/safeuser")
+const safeuserModel = require("../models/safeuser");
+const authorize = require('../middleware/rbacMiddleware');
+const UserRole = require('../enums/roles');
 const router = express.Router()
 
-router.get('/user', async (req, res) => {
+router.get('/user',authorize(UserRole.admin) ,async (req, res) => {
     try{
     const data = await safeuserModel.find();
     res.json(data)
@@ -12,7 +14,7 @@ catch(error){
 }
 });
 
-router.get('/user/:id', async (req, res) => {
+router.get('/user/:id', authorize(UserRole.admin), async (req, res) => {
 try{
     const data = await safeuserModel.findById(req.params.id);
     res.json(data)
@@ -22,7 +24,7 @@ catch(error){
 }
 })
 
-router.delete('/user/:id', async (req, res) => {
+router.delete('/user/:id', authorize(UserRole.admin), async (req, res) => {
     try {
     const id = req.params.id;
     const data = await safeuserModel.findByIdAndDelete(id)
@@ -33,7 +35,7 @@ catch (error) {
 }
 });
 
-router.patch('/user/:id', async (req, res) => {
+router.patch('/user/:id', authorize(UserRole.admin), async (req, res) => {
 try {
     const id = req.params.id;
     const updatedData = req.body;

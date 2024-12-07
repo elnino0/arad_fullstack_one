@@ -1,6 +1,6 @@
 const users = require("./usersData/users.json")
 const UserModel = require('./models/safeuser');
-
+const permissions = require('./config/Permissions.json');
 
 async function insertUsers(){
 
@@ -11,7 +11,11 @@ async function insertUsers(){
             continue
         }
 
-        const userModel = new UserModel({username:user.username, email:user.email,password:"defualte"})
+        let userPermissions = permissions.find((r) => r.id === user.id);
+        if(!userPermissions){
+            userPermissions=[]
+        }
+        const userModel = new UserModel({username:user.username,email:user.email,password:"defualte", roles:userPermissions.permissions})
         userModel.save()
 
     }

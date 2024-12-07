@@ -26,29 +26,29 @@ axios.post("http://localhost:3000/auth/login",  { email, password } )
       client.defaults.headers["authorization"] = "Bearer " + response.data.token
 
 
-      // client.get("http://localhost:3000/api/user").then(res =>{
-      //   console.log(res.data)
-      // })
+      client.get("http://localhost:3000/api/user").then(res =>{
+        console.log(res.data)
+      })
 
-      // client.get("http://localhost:3000/api/movies").then(res =>{
-      //   console.log(res.data)
-      // })
+      client.get("http://localhost:3000/api/movies").then(res =>{
+        console.log(res.data)
+      })
 
-      // client.get("http://localhost:3000/api/subs").then(res =>{
-      //   console.log(res.data)
-      // })
+      client.get("http://localhost:3000/api/subs").then(res =>{
+        console.log(res.data)
+      })
 
-      // client.post("http://localhost:3000/api/movies", {
-      //   name: "test",
-      //   description: "test",
-      //   category: "test",
-      //   genre: "test",
-      //   image: "test",
-      //   rating: "test", 
-      //   premiered: "test",  
-      // }).then(res =>{
-      //   console.log(res.data)
-      // })
+      client.post("http://localhost:3000/api/movies", {
+        name: "test",
+        description: "test",
+        category: "test",
+        genre: "test",
+        image: "test",
+        rating: "test", 
+        premiered: "test",  
+      }).then(res =>{
+        console.log(res.data)
+      })
 
       client.post("http://localhost:3000/api/subs", {
         userid: 1,
