@@ -1,6 +1,18 @@
-version: '3.8'
-
+version: '3'
 services:
+  app:
+    build: .\backend
+    restart: always
+    container_name: app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=mongodb://myuser:mypassword@mongodb
+      - JWT_SECRET=verysecrectsfuff
+    depends_on:
+      - mongodb
+
   mongodb:
     image: mongo:latest
     container_name: mongodb
@@ -14,3 +26,7 @@ services:
 
 volumes:
   mongodb_data:
+
+networks:
+  default:
+    driver: bridge
