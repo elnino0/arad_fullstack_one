@@ -5,13 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import FilterComponent from '../componets/FilterComponent';
 import { useEffect } from 'react';
 import Pagination from '../componets/Pagination';
+import rolesEnum from '../enums/rolesEnum';
+import DateSelector from '../componets/dateSelectorComp';
 
 
 
 function MoviesTab() {
     const dispatch = useDispatch();
     const movies = useSelector((state) => state.movies);
-    const [movieDetials, setMovieDetails] = useState({});
+    const roles = useSelector((state) => state.roles);
+    const [movieDetials, setMovieDetails] = useState({premiered: new Date().toISOString()});
     const [filteredData, setFilteredData] = useState([]);
     const [mode, setMode] = useState('show');   
     const [newMovie, setNewMovie] = useState({});
@@ -60,7 +63,7 @@ function MoviesTab() {
             <Pagination length={filteredData.length} postsPerPage={postsPerPge} handlePagination={handlePagination} currentPage={currentPage} />
             {
                 currentPosts.map((movie,index) => (
-                    <div key={index} ><MoviesDtails details={movie} OnDelete={onDelete} OnEdit={onEdit} /></div>
+                    <div key={index} ><MoviesDtails details={movie} OnDelete={(roles.includes(rolesEnum.admin) || roles.includes(rolesEnum.DELETE_MOVIES)) ? onDelete : null} OnEdit={(roles.includes(rolesEnum.admin) || roles.includes(rolesEnum.UPDATE_MOVIE)) ? onEdit : null } /></div>
                 ))
             }
             </div>
@@ -77,6 +80,7 @@ function MoviesTab() {
         return <div>
             Name: <input type="text" name="name" onChange={(e) => { setNewMovie({ ...newMovie, name: e.target.value }) }} />
             Description: <input type="text" name="description" onChange={(e) => { setNewMovie({ ...newMovie, description: e.target.value }) }} />
+            Premiered: <DateSelector onChange={(date) => { setMovieDetails({ ...movieDetials, premiered: date }) }}/>
             <button type="submit" onClick={() => { onSubmit() }}>Add</button>
             <button onClick = {() => { setMode('show') }}>Cancel</button>
         </div>
@@ -94,6 +98,7 @@ function MoviesTab() {
         return <div>
             Name: <input type="text" name="name" onChange={(e) => { setMovieDetails({ ...movieDetials, name: e.target.value }) }} value={movieDetials.name} />
             Description: <input type="text" name="description" onChange={(e) => { setMovieDetails({ ...movieDetials, description: e.target.value }) }} value={movieDetials.description} />
+            Premiered: <DateSelector onChange={(date) => { setMovieDetails({ ...movieDetials, premiered: date }) }}/>
             <button type="submit" onClick={() => { onSubmit() }}>Save</button>
             <button onClick={() => { setMode('show') }}>Cancel</button>
         </div>
@@ -102,13 +107,13 @@ function MoviesTab() {
 
     return <div>This is tab 1
             {
-                mode === 'show' && showMovies()
+                mode === 'show' && (roles.includes(rolesEnum.admin) || roles.includes(rolesEnum.VIEW_MOVIES)) && showMovies()
             }
             {
-                mode === 'edit' && editMovie()
+                mode === 'edit' && (roles.includes(rolesEnum.admin) || roles.includes(rolesEnum.UPDATE_MOVIE)) && editMovie()
             }
             {
-                mode === 'add' && addMovie() 
+                mode === 'add' && (roles.includes(rolesEnum.admin) || roles.includes(rolesEnum.CREATE_MOVIES)) && addMovie() 
             }
     </div>;
 

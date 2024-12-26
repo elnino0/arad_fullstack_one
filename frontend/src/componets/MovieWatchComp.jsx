@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const MovieWatchComp = ({user, options, onNewSub}) => {
     const [mode, setMode] = useState('hide');
-    const [movieDetials, setMovieDetails] = useState({});
+    const [movieDetials, setMovieDetails] = useState({date: new Date().toISOString()});
     const OpenEdit = () => {
         setMode('show');
     }
@@ -19,7 +19,7 @@ const MovieWatchComp = ({user, options, onNewSub}) => {
     return <div>MovieWatchComp
         <button onClick={() => { OpenEdit()}}>Add new sub</button>
         {
-            mode === 'show' && <div>
+            mode === 'show' && onAddSub && <div>
                 <button onClick={() => { setMode('hide') }}>Cancel</button>
                 <button onClick={() => { onAddSub() }}>Add Sub</button>
                 <Autocomplete options={options.map(op => op.name)} onSelect={(selectedOption) => {

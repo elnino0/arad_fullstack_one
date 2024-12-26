@@ -9,9 +9,7 @@ const User = require('../models/safeuser');
 async function getUserRolesFromRequest(req) {
   const token = req.headers.authorization.split(' ')[1];
   const { id } = jwt.verify(token, config.jwtSecret);
-  console.log("id",id);
   const userRoles = await User.findById(id).select('roles');
-  console.log("userRoles",userRoles);
   return userRoles.roles;
 }
 
@@ -22,8 +20,6 @@ async function getUserRolesFromRequest(req) {
  */
  function authorize(...requiredRoles) {
   return async (req, res, next) => {
-    console.log("req.path", req.path ,req.method);
-    console.log(requiredRoles);
     try {
       const userRoles = await getUserRolesFromRequest(req);
 

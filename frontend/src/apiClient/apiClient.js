@@ -1,5 +1,5 @@
 import axios from 'axios'
-import config from '../config';
+import config from '../config/config';
 
 const apiClient = axios.create({
     baseURL: config.backendUrl,
@@ -7,6 +7,8 @@ const apiClient = axios.create({
         'Content-Type': 'application/json'
     }
 });
+
+console.log(config.backendUrl)
 
 class ApiClient {
 
@@ -23,16 +25,23 @@ class ApiClient {
      * @returns {Promise} The promise returned by the axios request.
      */
     async login(data) {
-        console.log("login-----",data)
-        const token = (await apiClient.post('/auth/login', data)).data.token
+        const res = (await apiClient.post('/auth/login', data)).data
+        const token = res.token
+        console.log(res)
+        localStorage.setItem('admin', res.isAdmin)
         localStorage.setItem('token', token)
         if (token) {
             apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`
         }
     }
 
+    isAdmin() {
+        return localStorage.getItem('admin')
+    }
+
     logout() {
         localStorage.removeItem('token')
+        localStorage.removeItem('admin')
         apiClient.defaults.headers.common['Authorization'] = undefined
     }
 
@@ -92,12 +101,16 @@ class ApiClient {
         return apiClient.post('/auth/changePassword', data)
     }
 
-    getprofile() {
+    getProfile() {
         return apiClient.get('/auth/profile')
     }
 
     getRoles(){
         return apiClient.get('/api/roles')
+    }
+
+    getUsersSubs() {
+        return apiClient.get('/api/usersubs')
     }
 
 }

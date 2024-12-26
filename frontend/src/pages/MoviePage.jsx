@@ -12,7 +12,6 @@ function MoviePage() {
     const fetchData = async () => {
       try {
         apiClient.getMovie(id).then((response) => {
-          console.log("getMovie  ",response.data);
             setData(response.data);
         })
       } catch (error) {

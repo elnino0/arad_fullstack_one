@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 
 import { createSelector } from 'reselect';
+import rolesEnum from '../enums/rolesEnum';
 
 const selectUsers = (state) => state.movies; 
 
@@ -18,10 +19,9 @@ const selectMovieNames = createSelector(
 
 function SubscriptionsTab() {
     const subs = useSelector((state) => state.subscriptions);
-    const users = useSelector((state) => state.users);
     const options = useSelector(selectMovieNames);
+    const roles = useSelector((state) => state.roles)
     const dispatch = useDispatch();
-    console.log("SubscriptionsTab subs ",subs);
     const onNewSub = (data) => {
         apiClient.addSub(data).then((res) => {
             dispatch({type: 'ADD_SUBSCRIPTION', payload: data});
@@ -42,20 +42,13 @@ function SubscriptionsTab() {
 
     const renderSubs = () => {
 
-        if(users.length === 0) return <div>Loading...</div>;
-
-        for (let user of users) {
-            if(!user.subscriptions) {
-                user.subscriptions = [];
-            }
-
-            user.subscriptions = subs.filter((sub) => sub.userid === user._id);
-        }
+        if(subs.length === 0) return <div>Loading...</div>;
 
         return <div>
             {
-                users.map((user,index) => (
-                    <div key={index} ><SubscriptionsComp userDtails={user}  options={options} onNewSub = {onNewSub} onEdit = {onEdit} onDelete = {onDelete}/></div>
+                subs.map((user,index) => (
+                    <div key={index} ><SubscriptionsComp userDtails={user}  options={options} onNewSub = {roles.includes(rolesEnum.admin) || roles.includes(rolesEnum.CREATE_SUBSCRIPTIONS) ? onNewSub : null} 
+                    onEdit = {roles.includes(rolesEnum.admin) || roles.includes(rolesEnum.UPDATE_SUBSCRIPTION) ? onEdit : null} onDelete = {roles.includes(rolesEnum.admin) || roles.includes(rolesEnum.DELETE_SUBSCRIPTIONS) ? onDelete : null}/></div>
                 ))
             }
         </div>

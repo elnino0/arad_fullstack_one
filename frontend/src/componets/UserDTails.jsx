@@ -5,7 +5,6 @@
  * @returns {JSX.Element}
  */
 const UserDetails = ({ details , OnDelete, OnEdit}) => {
-  console.log("UserDetails", details);
   const { username, email, roles } = details;
 
   return (

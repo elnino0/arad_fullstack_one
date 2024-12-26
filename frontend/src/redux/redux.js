@@ -4,6 +4,7 @@ const initialState = {
   users: [],
   movies: [],
   sunscriptions: [],
+  roles: [],
 };
 
 function reducer(state = initialState, action) {
@@ -72,7 +73,12 @@ function reducer(state = initialState, action) {
         ...state,
         subscriptions: action.payload,
       };
-      
+    case 'SET_ROLES':
+      return {
+        ...state,
+        roles: action.payload,
+      };
+    
     default:
       return state;
     

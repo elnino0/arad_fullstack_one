@@ -23,8 +23,7 @@ async function insertUsers(){
             roles:userPermissions.permissions}
 
         const userModel = new UserModel(userData)
-        userModel.save()//.then((res) => console.log(res)).catch((err) => console.log(err))
-
+        userModel.save()
     }
     return
 }

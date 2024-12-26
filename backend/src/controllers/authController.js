@@ -1,10 +1,11 @@
 // controllers/authController.js
 
 const User = require('../models/safeuser');
-const Role = require('../modules/role');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
-const { is } = require('express/lib/request');
+const hashPassword = require('../modules/hashPassword');
+const  ms  = require('ms');
+const UserRole = require('../enums/roles');
 
 
 // Register a new user with a role
@@ -21,8 +22,9 @@ exports.registerUser = (req, res) => {
   });
 };
 
-const generateToken = (id) => {
-     return jwt.sign({ id }, config.jwtSecret, { expiresIn: '6d' });
+const generateToken = (id, options = { expiresIn: '6d' }) => {
+      console.log(config)
+     return jwt.sign({ id }, config.jwtSecret, options);
    };
 
    exports.registerUser = async (req, res) => {
@@ -34,14 +36,15 @@ const generateToken = (id) => {
        return res.status(400).json({ message: 'User already exists' });
      }
 
-     const user = await User.create({ username, email, password });
+     const hashPassword = await hashPassword(password)
+     const user = await User.create({ username, email, hashPassword});
 
      if (user) {
        res.status(201).json({
          _id: user._id,
          username: user.username,
          email: user.email,
-         token: generateToken(user._id),
+         token: generateToken(user._id, {  expiresIn: ms(user.sessionTimeMin * 60 * 1000 ) }),
        });
      } else {
        res.status(400).json({ message: 'Invalid user data' });
@@ -50,16 +53,15 @@ const generateToken = (id) => {
 
    exports.loginUser = async (req, res) => {
      const { email, password } = req.body;
-      console.log("loginUser", { email, password } )
      const user = await User.findOne({ email });
-
+    console.log(user)
      if (user && (await user.matchPassword(password))) {
        res.json({
          _id: user.id,
          username: user.username,
          email: user.email,
-         token: generateToken(user._id),
-         isAdmin: user.roles.includes(Role.Admin),
+         token: generateToken(user._id , {  expiresIn: ms(user.sessionTimeMin * 60 * 1000 ) }),
+         isAdmin: user.roles.includes(UserRole.admin),
        });
      } else {
        res.status(401).json({ message: 'Invalid email or password' });
@@ -88,8 +90,7 @@ const generateToken = (id) => {
  
      if (user && (await user.matchPassword(oldPassword))) {
        user.password = newPassword;
-       await user.save();
- 
+       await User.updateOne({_id:req.user.id},{password: await hashPassword(newPassword) });
        res.json({ message: 'Password changed successfully' });
      } else {
        res.status(401).json({ message: 'Invalid old password' });

@@ -3,12 +3,12 @@ const subsModel = require("../models/subscriptions");
 const authorize = require('../middleware/rbacMiddleware');
 const UserRole = require('../enums/roles');
 const moviesModel = require('../models/movies');
+const safeUser = require('../models/safeuser');
 const router = express.Router()
 
 router.post('/subs', authorize(UserRole.admin, UserRole.CreateSubscriptions),async (req, res) => {
     
   try {
-      console.log("subs body",req.body)
       const { userId: userid, movieName, date, movieId } = req.body;
 
       if (!userid || !movieName) {
@@ -38,6 +38,43 @@ router.post('/subs', authorize(UserRole.admin, UserRole.CreateSubscriptions),asy
     catch(error){
         res.status(500).json({message: error.message})
     }
+});
+
+router.get('/usersubs', authorize(UserRole.admin, UserRole.ViewSubscriptions),async (req, res) => {
+  try{
+  let dataSubs = await subsModel.find().exec();
+  let datausers = await safeUser.find().select("name email address").exec();
+  
+  datausers = datausers.map((user) => {
+    return {
+      _id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      address: user.address,
+    };
+  })
+  
+  dataSubs = dataSubs.map((sub) => {
+    return {
+      _id: sub._id.toString(),
+      userid: sub.userid,
+      movieName: sub.movieName,
+      date: sub.date,
+      movieId: sub.movieId,
+    };
+  })
+
+  for (let user of datausers) {
+    if(!user.subscriptions) {
+        user.subscriptions = [];
+    }
+    user.subscriptions = dataSubs.filter((sub) => sub.userid === user._id);
+    }
+    res.json(datausers)
+  }
+  catch(error){
+    res.status(500).json({message: error.message})
+  }
 });
 
 router.get('/subs/:id',authorize(UserRole.admin, UserRole.ViewSubscriptions) ,async (req, res) => {

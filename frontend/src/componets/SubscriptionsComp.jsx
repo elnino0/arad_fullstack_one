@@ -6,14 +6,16 @@ const SubscriptionsComp = ({userDtails ,options ,onNewSub, onEdit, onDelete}) =>
         <br />
         City : {userDtails?.address?.city}
         <br />
-        <button onClick={() => {onEdit(userDtails)}} >edit</button>
-        <button onClick={() => {onDelete(userDtails)}} >delete</button>
+        {
+            onEdit && <button onClick={() => {onEdit(userDtails)}} >edit</button>
+        }
+        {
+            onDelete && <button onClick={() => {onDelete(userDtails)}} >delete</button>
+        }
         <div>
-            <MovieWatchComp user={userDtails} options={options} onNewSub={onNewSub} />
+            <MovieWatchComp user={userDtails} options={options} onNewSub={onNewSub}/>
         </div>
     </div>
-
-
 }
 
 export default SubscriptionsComp

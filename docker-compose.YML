@@ -1,9 +1,20 @@
 version: '3'
 services:
-  app:
+  # frontend:
+  #   build: .\frontend
+  #   restart: always
+  #   container_name: frontend
+  #   ports:
+  #     - "5173:5173"
+  #   environment:
+  #     - VITE_BACKEND_URL=http://backend:3000
+  #   depends_on:
+  #     - backend
+
+  backend:
     build: .\backend
     restart: always
-    container_name: app
+    container_name: backend
     ports:
       - "3000:3000"
     environment:
@@ -23,6 +34,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: myuser
       MONGO_INITDB_ROOT_PASSWORD: mypassword
+
 
 volumes:
   mongodb_data:

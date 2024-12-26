@@ -105,6 +105,7 @@ function UsersTab() {
        return <div>
             Name: <input type="text" name="username" onChange={(e) => { setUserDetails({ ...userDetials, username: e.target.value }) }} />
             Email: <input type="text" name="email" onChange={(e) => { setUserDetails({ ...userDetials, email: e.target.value }) }} />
+            Session Time out in minutes: <input type="number" name="timeout" onChange={(e) => { setUserDetails({ ...userDetials, sessionTimeMin: e.target.value }) }} />
             Roles: {
                 userDetials.roles.map((role) => (
                     <div key={role}>

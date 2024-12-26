@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const hashPassword = require('../modules/hashPassword');
 const database = require('../modules/mongodbConnector').database;
 
 
@@ -29,14 +30,23 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
 
+  dataCreated: {
+    type: String,
+    default: Date.now().toString(),
+  },
+
+  sessionTimeMin: {
+    type: Number,
+    default: 60,
+  }
+
 });
 
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
     return next();
   }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  this.password = await hashPassword(this.password)
   next();
 });
 

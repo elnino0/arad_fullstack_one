@@ -12,17 +12,7 @@ class Mongodb {
         return this.database.isConnected
     }
 
-    // get database(){
-    //     return this.database
-    // }
-
-    // set database(database){
-    //     console.log("database ", database)
-    //     this.database = database
-    // }
-
     connect(onConnection){
-        console.log("hallooo")
         mongoose.connect(this.mongoString)
 
         this.database = mongoose.connection

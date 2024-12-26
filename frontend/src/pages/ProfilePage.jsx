@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import apiClient from "../apiClient/apiClient";
 
@@ -8,12 +8,12 @@ const ProfilePage = () => {
     const [profile , setProfile] = useState({});
     const [ password , setPassword] = useState({});
     const [confirmPassword , setConfirmPassword] = useState(false);
+    const navigate = useNavigate();
     useEffect(() => {
         // Fetch data based on the id parameter
         const fetchData = async () => {
             try {
                 const response = await apiClient.getProfile(id);
-                console.log("getProfile  ",response.data);
                     setProfile(response.data);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -25,7 +25,8 @@ const ProfilePage = () => {
 
     const onChangePassword = (newPassword) => {
         apiClient.changePassword(newPassword).then((res) => {
-            console.log(res)
+            apiClient.logout();
+            navigate("/login");
             setConfirmPassword(true)
         })
     }
@@ -34,7 +35,7 @@ const ProfilePage = () => {
         <div>ProfilePage
             <div>
                 <h1>Profile for ID: {id}</h1>
-                <div>Name : {profile.name}</div>
+                <div>Name : {profile.username}</div>
                 <div>Email : {profile.email}</div>
                 <div>Role : {profile.roles}</div>
             </div>

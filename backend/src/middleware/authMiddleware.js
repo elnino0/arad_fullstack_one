@@ -4,7 +4,6 @@ const config = require('../config/config');
 
 exports.protect = async (req, res, next) => {
   let token;
-  console.log("req.path ---- ", req.path, " ---- ", req.path.includes('/login'))
 
   if (req.path.includes('/login')) {
     next();

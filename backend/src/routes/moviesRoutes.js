@@ -55,7 +55,6 @@ router.patch('/movies/:id', authorize(UserRole.admin, UserRole.CreateMovies) ,as
         const id = req.params.id;
         
         const updatedData = req.body;
-        console.log("updatedData",updatedData)
         const options = { new: true };
 
         const result = await moviesModel.findByIdAndUpdate(

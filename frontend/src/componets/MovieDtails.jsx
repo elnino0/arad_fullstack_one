@@ -16,12 +16,17 @@ const MoviesDtails = ({ details , OnDelete, OnEdit}) => {
                 <br />
                 Premiered: {details.premiered}
                 <br />
-            { (OnDelete && OnEdit) &&
+            { (OnEdit) &&
                 <div>
                      <button onClick={() => {OnEdit(details)}}>Edit</button>
-                     <button onClick={() => {OnDelete(details)}}>Delete</button>
                 </div>
             }
+
+            { (OnDelete) &&
+                <div>
+                     <button onClick={() => {OnDelete(details)}}>Delete</button>
+                </div>
+            }   
 
         </div>
     );
